@@ -7,6 +7,7 @@ TopDownGame.Boot.prototype = {
         this.load.image('preloadbar', 'assets/images/preloader-bar.png');
     },
     create: function() {
+        this.game.world.setBounds(0, 0, 200, 200);
         this.game.stage.backgroundColor = '#fff';
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;

@@ -21,21 +21,19 @@ TopDownGame.Game.prototype = {
 
         this.createPlayer();
 
+        this.createModal();
+        this.showModal();
+
+        this.createItems();
+
         // register cursors
         this.cursors = this.game.input.keyboard.createCursorKeys();
-    },
-    createPlayer: function() {
-        var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
-        this.player = this.game.add.sprite(result[0].x, result[0].y, 'player-all');
-
-        this.game.physics.arcade.enable(this.player);
-        this.game.camera.follow(this.player);
     },
     update: function() {
         // collision
         this.game.physics.arcade.collide(this.player, this.obstacles);
-        this.game.physics.arcade.collide(this.player, this.lake);
-        // this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
+        this.game.physics.arcade.collide(this.player, this.lake, this.interact);
+        this.game.physics.arcade.collide(this.player, this.items, this.interact, null, this);
         // this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
 
         // player movement
@@ -61,6 +59,72 @@ TopDownGame.Game.prototype = {
             this.player.body.velocity.x += step_factor;
             this.player.frame = 1;
         }
+    },
+    interact: function(player, collectable) {
+        var item = collectable.key;
+        if (item === 'computer') {
+            this.showModal();
+        }
+    },
+    createItems: function() {
+        this.items = this.game.add.group();
+        this.items.enableBody = true;
+        var item;
+        result = this.findObjectsByType('item', this.map, 'objectsLayer');
+        result.forEach(function(element) {
+            this.createFromTiledObject(element, this.items);
+        }, this);
+    },
+    createFromTiledObject: function(element, group) {
+        var sprite = group.create(element.x, element.y, element.properties.sprite);
+
+        sprite.body.moves = false;
+
+        // Copy all properties to the sprite
+        Object.keys(element.properties).forEach(function(key) {
+            sprite[key] = element.properties[key];
+        });
+    },
+    createModal: function() {
+        // Modals to display.
+        this.modal = new gameModal(this.game);
+        this.modal.createModal({
+            type: "modal1",
+            includeBackground: true,
+            backgroundColor: "0x191d19",
+            backgroundOpacity: 1,
+            modalCloseOnInput: true,
+            fixedToCamera: true,
+            itemsArr: [{
+                    type: "text",
+                    content: "Find the bug! (Click anywhere to close)",
+                    fontFamily: "bitmapText",
+                    fontSize: 12,
+                    color: "0x6BD271",
+                    offsetY: -120
+                },
+                {
+                    type: "text",
+                    align: "left",
+                    content: "var list = new List { \"fish\", \"and\", \"chips\" };\r\n" +
+                        "for (int i = 0; i < list.Count; i++) {   \r\n\t list.Add(list[i].ToUpper()); \r\n}",
+                    fontFamily: "bitmapText",
+                    fontSize: 12,
+                    color: "0x6BD271",
+                    offsetY: -50
+                }
+            ]
+        });
+    },
+    showModal: function() {
+        this.modal.showModal("modal1");
+    },
+    createPlayer: function() {
+        var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
+        this.player = this.game.add.sprite(result[0].x, result[0].y, 'player-all');
+
+        this.game.physics.arcade.enable(this.player);
+        this.game.camera.follow(this.player);
     },
     findObjectsByType: function(type, map, layer) {
         var result = new Array();

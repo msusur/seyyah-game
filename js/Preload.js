@@ -9,8 +9,15 @@ TopDownGame.Preload.prototype = {
 
         this.load.setPreloadSprite(this.preloadBar);
 
+        // Game assets
         this.load.tilemap('game-level1', 'assets/tilemaps/game-level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('gameTiles', 'assets/images/tiles.png');
+
+        // Game items
+        this.load.image('computer', 'assets/images/computer.png');
+
+        // Modals
+        this.load.image('terminal-background', 'assets/images/terminal-background.png');
 
         // Player sprites
         this.load.spritesheet('player-all', 'assets/images/player-sprite.png', 16, 16);
