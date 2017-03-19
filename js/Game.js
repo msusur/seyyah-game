@@ -22,7 +22,6 @@ TopDownGame.Game.prototype = {
         this.createPlayer();
 
         this.createModal();
-        this.showModal();
 
         this.createItems();
 
@@ -63,7 +62,7 @@ TopDownGame.Game.prototype = {
     interact: function(player, collectable) {
         var item = collectable.key;
         if (item === 'computer') {
-            this.showModal();
+            this.showModal('code-window');
         }
     },
     createItems: function() {
@@ -89,7 +88,7 @@ TopDownGame.Game.prototype = {
         // Modals to display.
         this.modal = new gameModal(this.game);
         this.modal.createModal({
-            type: "modal1",
+            type: "code-window",
             includeBackground: true,
             backgroundColor: "0x191d19",
             backgroundOpacity: 1,
@@ -116,8 +115,8 @@ TopDownGame.Game.prototype = {
             ]
         });
     },
-    showModal: function() {
-        this.modal.showModal("modal1");
+    showModal: function(modal) {
+        this.modal.showModal(modal);
     },
     createPlayer: function() {
         var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
