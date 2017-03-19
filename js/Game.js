@@ -39,28 +39,26 @@ TopDownGame.Game.prototype = {
         // this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
 
         // player movement
+        const step_factor = 50;
         this.player.body.velocity.x = 0;
         this.player.frame = 0;
         if (this.cursors.up.isDown) {
+            this.player.frame = 3;
             if (this.player.body.velocity.y == 0) {
-                this.player.body.velocity.y -= 50;
-                this.player.frame = 3;
+                this.player.body.velocity.y -= step_factor;
             }
         } else if (this.cursors.down.isDown) {
             if (this.player.body.velocity.y == 0) {
-                this.player.body.velocity.y += 50;
-                this.player.frame = 3;
+                this.player.body.velocity.y += step_factor;
             }
         } else {
             this.player.body.velocity.y = 0;
         }
         if (this.cursors.left.isDown) {
-            this.player.frame = 0;
-            this.player.body.velocity.x -= 50;
+            this.player.body.velocity.x -= step_factor;
             this.player.frame = 5;
         } else if (this.cursors.right.isDown) {
-            this.player.frame = 0;
-            this.player.body.velocity.x += 50;
+            this.player.body.velocity.x += step_factor;
             this.player.frame = 1;
         }
     },
