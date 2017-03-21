@@ -10,8 +10,16 @@ TopDownGame.Preload.prototype = {
         this.load.setPreloadSprite(this.preloadBar);
 
         // Game assets
+        this.load.tilemap('game-level2', 'assets/tilemaps/game-level2.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.tilemap('game-level1', 'assets/tilemaps/game-level1.json', null, Phaser.Tilemap.TILED_JSON);
+
+        // Tiles
+        this.load.image('indoorTiles', 'assets/images/indoor-tiles.png');
         this.load.image('gameTiles', 'assets/images/tiles.png');
+
+        // Doors
+        this.load.image('woodenDoor', 'assets/images/door-wooden.png');
+        this.load.image('woodenDoor-open', 'assets/images/door-wooden-open.png');
 
         // Game items
         this.load.image('computer', 'assets/images/computer.png');

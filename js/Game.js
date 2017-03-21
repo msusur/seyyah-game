@@ -4,17 +4,18 @@ TopDownGame.Game = function() {};
 
 TopDownGame.Game.prototype = {
     create: function() {
-        this.map = this.game.add.tilemap('game-level1');
+        this.map = this.game.add.tilemap('game-level2');
 
-        this.map.addTilesetImage('tiles', 'gameTiles');
+        // this.map.addTilesetImage('tiles', 'gameTiles');
+        this.map.addTilesetImage('indoor-tiles', 'indoorTiles');
 
         // create layer
         this.base = this.map.createLayer('base');
-        this.lake = this.map.createLayer('lake');
+        //this.lake = this.map.createLayer('lake');
         this.obstacles = this.map.createLayer('obstacles');
 
         // set collision
-        this.map.setCollisionBetween(1, 200, true, 'lake');
+        // this.map.setCollisionBetween(1, 200, true, 'lake');
         this.map.setCollisionBetween(1, 1000, true, 'obstacles');
 
         this.base.resizeWorld();
@@ -25,15 +26,17 @@ TopDownGame.Game.prototype = {
 
         this.createItems();
 
+        this.createDoors();
+
         // register cursors
         this.cursors = this.game.input.keyboard.createCursorKeys();
     },
     update: function() {
         // collision
         this.game.physics.arcade.collide(this.player, this.obstacles);
-        this.game.physics.arcade.collide(this.player, this.lake, this.interact);
+        // this.game.physics.arcade.collide(this.player, this.lake, this.interact);
         this.game.physics.arcade.collide(this.player, this.items, this.interact, null, this);
-        // this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
+        this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
 
         // player movement
         const step_factor = 50;
@@ -69,15 +72,43 @@ TopDownGame.Game.prototype = {
         this.items = this.game.add.group();
         this.items.enableBody = true;
         var item;
-        result = this.findObjectsByType('item', this.map, 'objectsLayer');
+        var result = this.findObjectsByType('item', this.map, 'objectsLayer');
         result.forEach(function(element) {
             this.createFromTiledObject(element, this.items);
         }, this);
     },
+    createDoors: function() {
+        this.doors = this.game.add.group();
+        this.doors.enableBody = true;
+
+        var item;
+        var result = this.findObjectsByType('door', this.map, 'objectsLayer');
+        result.forEach(function(element) {
+            this.createFromTiledObject(element, this.doors);
+        }, this);
+    },
+    enterDoor: function(player, door) {
+        debugger;
+        var x, y;
+        if (door.open) {
+            x = door.enterX
+            y = door.enterY;
+        } else {
+            x = door.targetX;
+            y = door.targetY;
+            door.open = true;
+        }
+        this.player.position.y = y;
+        this.player.position.x = x;
+        // player.x = x;
+        // player.y = y;
+    },
     createFromTiledObject: function(element, group) {
         var sprite = group.create(element.x, element.y, element.properties.sprite);
 
-        sprite.body.moves = false;
+        if (sprite.body) {
+            sprite.body.moves = false;
+        }
 
         // Copy all properties to the sprite
         Object.keys(element.properties).forEach(function(key) {
@@ -119,7 +150,7 @@ TopDownGame.Game.prototype = {
         this.modal.showModal(modal);
     },
     createPlayer: function() {
-        var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer')
+        var result = this.findObjectsByType('playerStart', this.map, 'objectsLayer');
         this.player = this.game.add.sprite(result[0].x, result[0].y, 'player-all');
 
         this.game.physics.arcade.enable(this.player);
